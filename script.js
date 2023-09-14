@@ -4,31 +4,33 @@ const buttons = document.querySelectorAll('.btn-outline-primary'); // Constant f
 const message = document.getElementById('message'); // Constant for in-page message (Last-Move + Winner)
 let gameEnded = false; // Var for in-game progress (When = True game stops)
 
-window.onload = createButton(); // Otherwise first clicks don't work
+window.onload = createButtons(); // Webpage directly loads function so the first moves ain't bugged
 
-function createButton() {
-    for (let i = 0; i < buttons.length; ++i) { // We activate the onClick function inside JS with this for
-        buttons[i].addEventListener('click', function () { // The onClick function
-            if (!gameEnded && this.textContent !== "X"
-                && this.textContent !== "O") {
-                if (clickCounter % 2 === 0) { // Algorithm for choosing the player (1 round, each)
-                    currentPlayer = "X" // First we start with X (First move)
-                } else {
-                    currentPlayer = "O"; // Second move (O)
-                }
-                this.textContent = currentPlayer; // For Last-Move in: message
-                message.textContent = "Last Move: " + currentPlayer; // Last-Move
-                const winner = checkWinner(); // For the function declared down
-                ++clickCounter; // For stopping the game if it's draw (9 moves in total)
-                if (clickCounter === 9) { // Draw Algorithm
-                    message.textContent = "It's a draw!"
-                }
-                if (winner) {
-                    message.textContent = winner;
-                    gameEnded = true;
-                }
-            }
-        });
+
+function createButtons() { // Separate function for the logic
+    for (let i = 0; i < buttons.length; ++i) { // That happens 'onButtonClick'
+        buttons[i].addEventListener('click', onButtonClick);
+    }
+}
+
+function onButtonClick() { // Algorithm for pressing buttons
+    if (!gameEnded && this.textContent !== "X" && this.textContent !== "O") { // Restrictions for buttons
+        if (clickCounter % 2 === 0) { // Player 1
+            currentPlayer = "X";
+        } else { // Player 2
+            currentPlayer = "O";
+        }
+        this.textContent = currentPlayer;
+        message.textContent = "Last Move: " + currentPlayer;
+        const winner = checkWinner();
+        ++clickCounter;
+        if (clickCounter === 9) {
+            message.textContent = "It's a draw!";
+        }
+        if (winner) {
+            message.textContent = winner;
+            gameEnded = true;
+        }
     }
 }
 
